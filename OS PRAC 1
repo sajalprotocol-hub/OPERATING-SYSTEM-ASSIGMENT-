@@ -1,0 +1,54 @@
+MAX_TASKS = 50
+Q1_QUANTUM = 10
+Q2_QUANTUM = 20
+
+class Task:
+    def __init__(self, id, burst_time, priority, arrival_time):
+        self.id = id
+        self.burst_time = burst_time
+        self.priority = priority
+        self.arrival_time = arrival_time
+
+queue1 = []
+queue2 = []
+
+def insert_task(task):
+    if task.priority == 1:
+        queue1.append(task)
+    else:
+        queue2.append(task)
+
+def delete_task(priority):
+    if priority == 1:
+        return queue1.pop(0)
+    else:
+        return queue2.pop(0)
+
+n = int(input("Enter the number of tasks: "))
+
+print("Enter the task details (ID, Burst Time, Priority, Arrival Time): ")
+for i in range(n):
+    task_input = input().split()
+    t = Task(int(task_input[0]), int(task_input[1]), int(task_input[2]), int(task_input[3]))
+    insert_task(t)
+
+current_time = 0
+while queue1 or queue2:
+    if queue1:
+        task = delete_task(1)
+        if task.burst_time > Q1_QUANTUM:
+            task.burst_time -= Q1_QUANTUM
+            current_time += Q1_QUANTUM
+            insert_task(task)
+        else:
+            current_time += task.burst_time
+            print(f"Task {task.id} completed at time {current_time}")
+    elif queue2:
+        task = delete_task(2)
+        if task.burst_time > Q2_QUANTUM:
+            task.burst_time -= Q2_QUANTUM
+            current_time += Q2_QUANTUM
+            insert_task(task)
+        else:
+            current_time += task.burst_time
+            print(f"Task {task.id} completed at time {current_time}")
